@@ -185,7 +185,7 @@ namespace nith::io
 		return GetMousePosition().x;
 	}
 
-	inline f32 Input::GetMouseX()
+	inline f32 Input::GetMouseY()
 	{
 		return GetMousePosition().y;
 	}

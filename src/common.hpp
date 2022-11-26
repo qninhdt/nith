@@ -1,12 +1,26 @@
 #pragma once
 
-#include "log.hpp"
-
 #ifdef _MSC_VER
 #ifdef _DEBUG
 #define NITH_DEBUG
 #endif // !_DEBUG
 #endif // !MSVC
+
+#ifdef _WIN32
+#ifdef _WIN64
+#define NITH_PLATFORM_WINDOWS
+#else
+#error "x86 Builds are not supported!"
+#endif
+#endif
+
+#ifdef NITH_DEBUG
+#ifdef NITH_PLATFORM_WINDOWS
+#define NITH_DEBUGBREAK() __debugbreak()
+#else
+#error "Platform doesn't support debugbreak yet!"
+#endif
+#endif
 
 namespace nith {
 

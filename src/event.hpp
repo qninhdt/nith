@@ -1,7 +1,5 @@
 #pragma once
 
-#include "debug_object.hpp"
-
 namespace nith
 {
     template<typename E>

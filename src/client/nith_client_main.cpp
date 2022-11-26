@@ -3,15 +3,12 @@
 #include "client/window_event.hpp"
 #include "client/gl/shader.hpp"
 #include "client/io/input.hpp"
+#include "client/gl/buffer.hpp"
+#include "client/gl/vertex_array.hpp"
 
 int main()
 {
     nith::Application gameApplication;
-    
-    /*nith::gl::Shader shader("basic_shader");
-
-    shader.loadFromFile("D:/github/nith/assets/shaders/basic_material.vert",
-        "D:/github/nith/assets/shaders/basic_material.frag");*/
 
     gameApplication.mainLoop();
 

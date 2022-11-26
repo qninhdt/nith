@@ -10,6 +10,8 @@ set(NITH_CLIENT_SOURCES
     "src/client/window_event.cpp"
     "src/client/io/input_event.cpp"
     "src/client/io/input.cpp"
+    "src/client/gl/buffer.cpp"
+    "src/client/gl/vertex_array.cpp"
 )
 
 set(NITH_UTIL_SOURCES
