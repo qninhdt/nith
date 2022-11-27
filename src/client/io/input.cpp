@@ -10,6 +10,15 @@ namespace nith::io
 		s_currentWindow = window;
 		GLFWwindow* nativeWindow = window->getNativeWindow();
 	
+		glfwSetCursorPosCallback(nativeWindow,
+			[](GLFWwindow* _nativeWindow, double mouseX, double mouseY)
+			{
+				static double lastX = 0, lastY = 0;
+				MouseMovedEvent event((f32)mouseX, (f32)mouseY, (f32)mouseX-lastX, (f32)mouseY-lastY);
+				s_eventDispatcher.dispatchEvent(event);
+			}
+		);
+
 		glfwSetKeyCallback(nativeWindow,
 			[](GLFWwindow* _nativeWindow, int key, int scancode, int action, int mods)
 			{

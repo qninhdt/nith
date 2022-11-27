@@ -11,6 +11,8 @@ namespace nith::io
         KeyPressed,
         KeyReleased,
         KeyTyped,
+        MouseMoved,
+        MouseClicked
     };
 
     class InputEvent : public Event<InputEventType>
@@ -19,6 +21,22 @@ namespace nith::io
         InputEvent(const InputEventType& type):
             Event(type)
         {}
+    };
+
+    class MouseEvent : public InputEvent
+    {
+    public:
+        MouseEvent(const InputEventType& type, const f32& mouseX, const f32& mouseY) :
+            InputEvent(type),
+            m_mouseX(mouseX),
+            m_mouseY(mouseY)
+        {}
+
+        f32 getMouseX() const { return m_mouseX; }
+        f32 getMouseY() const { return m_mouseY; }
+    private:
+        f32 m_mouseX;
+        f32 m_mouseY;
     };
 
     class KeyEvent : public InputEvent
@@ -46,7 +64,7 @@ namespace nith::io
 
         void toString(std::ostream& output) const
         {
-            output << "KeyPressedEvent { keyCode = " << (u32) getKeyCode() << " isRepeat = " << (m_isRepeat ? "true" : "false") << " }";
+            output << "KeyPressedEvent { keyCode = " << (u32) getKeyCode() << ", isRepeat = " << (m_isRepeat ? "true" : "false") << " }";
         }
 
         NITH_EVENT_CLASS(InputEventType, KeyPressed)
@@ -67,6 +85,30 @@ namespace nith::io
         }
 
         NITH_EVENT_CLASS(InputEventType, KeyReleased)
+    };
+
+    class MouseMovedEvent : public MouseEvent
+    {
+    public:
+        MouseMovedEvent(const f32& mouseX, const f32& mouseY,
+            const f32& mouseDeltaX, const f32& mouseDeltaY):
+            MouseEvent(InputEventType::MouseMoved, mouseX, mouseY),
+            m_mouseDeltaX(mouseDeltaX),
+            m_mouseDeltaY(mouseDeltaY)
+        {}
+
+        f32 getMouseDeltaX() const { return m_mouseDeltaX; }
+        f32 getMouseDeltaY() const { return m_mouseDeltaY; }
+
+        void toString(std::ostream& output) const
+        {
+            output << "MouseMovedEvent { mouseX = " << (u32)getMouseX() << ", mouseY = " << (u32)getMouseY() << " }";
+        }
+
+        NITH_EVENT_CLASS(InputEventType, MouseMoved)
+    private:
+        f32 m_mouseDeltaX;
+        f32 m_mouseDeltaY;
     };
 
     using InputEventDispatcher = EventDispatcher<InputEventType>;

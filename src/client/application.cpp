@@ -46,6 +46,14 @@ namespace nith
                 std::cout << event << '\n';
             }
         );
+
+        io::Input::GetEventDispatcher()
+            .addEventListener<io::MouseMovedEvent>(
+                [](const io::MouseMovedEvent& event)
+                {
+                    std::cout << event << '\n';
+                }
+        );
     }
 
     void Application::init_everything()
