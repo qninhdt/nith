@@ -98,5 +98,5 @@ namespace nith
         u32 m_posX, m_posY;
     };
 
-    using WindowEventDispatcher = EventDispatcher<WindowEventType, WindowEvent>;
+    using WindowEventDispatcher = EventDispatcher<WindowEventType>;
 }

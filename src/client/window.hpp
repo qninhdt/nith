@@ -13,23 +13,25 @@ namespace nith
         /// @brief Get window width
         /// 
         /// @return Window width
-        u32 getWidth() const;
+        u32 getWidth() const { return m_width; }
 
         /// @brief Get window height
         /// 
         /// @return Window height
-        u32 getHeight() const;
+        u32 getHeight() const { return m_height; }
+
+        f32 getAspect() const { return 1.0f * m_width / m_height; }
 
         /// @brief Get window title
         /// 
         /// @return Window title
-        std::string getTitle() const;
+        std::string getTitle() const { return m_title; }
 
-        bool isVSync() const;
+        bool isVSync() const { return m_vSync; }
 
-        bool isOpen() const;
+        bool isOpen() const { return m_open; }
 
-        GLFWwindow* getNativeWindow() const;
+        GLFWwindow* getNativeWindow() const { return m_nativeWindow; }
 
         void setTitle(const std::string& title);
 
@@ -66,7 +68,10 @@ namespace nith
         void closeImmediately();
 
         /// @brief set current window to this window.
-        void makeCurrent() const;
+        void makeCurrent() const
+        {
+            glfwMakeContextCurrent(m_nativeWindow);
+        }
 
     private:
 
@@ -81,40 +86,4 @@ namespace nith
         std::string m_title;
         v4 m_clearColor;
     };
-
-    inline GLFWwindow* Window::getNativeWindow() const
-    {
-        return m_nativeWindow;
-    }
-
-    inline u32 Window::getWidth() const
-    {
-        return m_width;
-    }
-
-    inline u32 Window::getHeight() const
-    {
-        return m_height;
-    }
-
-    inline std::string Window::getTitle() const
-    {
-        return m_title;
-    }
-
-    inline bool Window::isVSync() const
-    {
-        return m_vSync;
-    }
-
-    inline bool Window::isOpen() const
-    {
-        return m_open;
-    }
-
-    inline void Window::makeCurrent() const
-    {
-        glfwMakeContextCurrent(m_nativeWindow);
-    }
-    
 }

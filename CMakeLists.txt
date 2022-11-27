@@ -12,6 +12,7 @@ set(NITH_CLIENT_SOURCES
     "src/client/io/input.cpp"
     "src/client/gl/buffer.cpp"
     "src/client/gl/vertex_array.cpp"
+    "src/client/renderer/perspective_camera.cpp"
 )
 
 set(NITH_UTIL_SOURCES

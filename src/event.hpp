@@ -21,7 +21,7 @@ namespace nith
     virtual enum_type getEventType() const override { return GetStaticEventType(); }\
 	virtual std::string getName() const override { return #type; }
 
-    template<typename EE, typename E>
+    template<typename EE>
     class EventDispatcher
     {
     public:
@@ -29,7 +29,7 @@ namespace nith
         void addEventListener(std::function<void(const T&)> callback)
         {
             m_dispatcher.appendListener(T::GetStaticEventType(),
-                [=](const E& event) { callback((T&)event); });
+                [=](const Event<EE>& event) { callback((T&)event); });
         }
 
         template<typename T>
@@ -39,6 +39,6 @@ namespace nith
         }
 
     private:
-         eventpp::EventDispatcher<EE, void(const E&)> m_dispatcher;
+         eventpp::EventDispatcher<EE, void(const Event<EE>&)> m_dispatcher;
     };
 }

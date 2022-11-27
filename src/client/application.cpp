@@ -3,6 +3,9 @@
 // TODO: remove later
 #include "client/gl/vertex_array.hpp"
 #include "client/gl/shader.hpp"
+#include "client/renderer/perspective_camera.hpp"
+#include "client/io/input.hpp"
+#include "client/io/input_event.hpp"
 
 namespace nith
 {
@@ -11,6 +14,38 @@ namespace nith
     {
         init_everything();
         m_mainWindow.open();
+
+        io::Input::SetCurrentWindow(&m_mainWindow);
+
+        m_mainWindow.addEventListener<WindowClosedEvent>(
+            [](const WindowClosedEvent& event)
+            {
+                std::cout << event << '\n';
+            }
+        );
+
+        m_mainWindow.addEventListener<WindowResizedEvent>(
+            [](const WindowResizedEvent& event)
+            {
+                std::cout << event << '\n';
+            }
+        );
+
+        io::Input::GetEventDispatcher()
+            .addEventListener<io::KeyPressedEvent>(
+            [](const io::KeyPressedEvent& event)
+            {
+                std::cout << event << '\n';
+            }
+        );
+
+        io::Input::GetEventDispatcher()
+            .addEventListener<io::KeyReleasedEvent>(
+            [](const io::KeyReleasedEvent& event)
+            {
+                std::cout << event << '\n';
+            }
+        );
     }
 
     void Application::init_everything()
@@ -29,20 +64,6 @@ namespace nith
     #endif
 
         NITH_CLIENT_TRACE("Initialize glfw successfully");
-
-        m_mainWindow.addEventListener<WindowClosedEvent>(
-            [](const WindowClosedEvent& event)
-            {
-                std::cout << event << '\n';
-            }
-        );
-
-        m_mainWindow.addEventListener<WindowResizedEvent>(
-            [](const WindowResizedEvent& event)
-            {
-                std::cout << event << '\n';
-            }
-        );
     }
 
     void Application::mainLoop()
@@ -71,10 +92,10 @@ namespace nith
             -0.5f,  0.5f, 0.0f,
         };
         f32 color[] = {
-            0.0f, 0.0f, 0.0f,
-             0.0f, 1.0f, 0.0f,
-             1.0f, 0.0f, 0.0f,
-             0.0f, 0.0f, 1.0f,
+            1.0f, 1.0f, 1.0f,
+             0.0f, 0.0f, 0.0f,
+             0.0f, 0.0f, 0.0f,
+             0.0f, 0.0f, 0.0f,
         };
 
         vbo1.bind();
@@ -109,11 +130,43 @@ namespace nith
 
         vao.setDrawCount(6);
 
+        PerspectiveCamera camera(glm::radians(50.0f), m_mainWindow.getAspect(), 0.2, 2000);
+        camera.setPosition({ 0, 0, 10 });
+        camera.updateProjectionViewMatrix();
 
         while (m_mainWindow.isOpen())
         {
             m_mainWindow.beginLoop();
+
             shader.use();
+            
+            v3 position = camera.getPostion();
+            if (io::Input::IsKeyPressed(io::KeyCode::A))
+            {
+                position.x -= 0.001;
+            }
+            if (io::Input::IsKeyPressed(io::KeyCode::D))
+            {
+                position.x += 0.001;
+            }
+            if (io::Input::IsKeyPressed(io::KeyCode::W))
+            {
+                position.z -= 0.001;
+            }
+            if (io::Input::IsKeyPressed(io::KeyCode::S))
+            {
+                position.z += 0.001;
+            }
+
+            camera.setPosition(position);
+            camera.updateViewMatrix();
+
+            shader.setMat4(shader.getUniformLocation("model"),
+                glm::translate(glm::mat4(1.0f), { 1, 0, 0 }));
+
+            shader.setMat4(shader.getUniformLocation("projection_view"),
+                camera.getProjectionViewMaxtrix());
+
             vao.draw();
             m_mainWindow.endLoop();
         }
