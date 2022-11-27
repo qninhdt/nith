@@ -37,5 +37,7 @@ namespace nith::io
     private:
         static Window* s_currentWindow;
 		static InputEventDispatcher s_eventDispatcher;
+		static double s_lastX;
+		static double s_lastY;
     };
 }

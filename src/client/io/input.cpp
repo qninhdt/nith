@@ -4,6 +4,8 @@ namespace nith::io
 {
 	Window* Input::s_currentWindow = nullptr;
 	InputEventDispatcher Input::s_eventDispatcher;
+	double Input::s_lastX;
+	double Input::s_lastY;
 
 	void Input::SetCurrentWindow(Window* window)
 	{
@@ -13,9 +15,11 @@ namespace nith::io
 		glfwSetCursorPosCallback(nativeWindow,
 			[](GLFWwindow* _nativeWindow, double mouseX, double mouseY)
 			{
-				static double lastX = 0, lastY = 0;
+				static double lastX = mouseX, lastY = mouseY;
 				MouseMovedEvent event((f32)mouseX, (f32)mouseY, (f32)mouseX-lastX, (f32)mouseY-lastY);
 				s_eventDispatcher.dispatchEvent(event);
+				lastX = mouseX;
+				lastY = mouseY;
 			}
 		);
 

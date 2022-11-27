@@ -18,6 +18,7 @@ namespace nith
         m_lookVector(0, 0, -1),
         m_rightVector(1, 0, 0)
     {
+        update_orientation();
         updateProjectionViewMatrix();
     }
 
@@ -40,15 +41,24 @@ namespace nith
         updateViewMatrix();
     }
 
-    void PerspectiveCamera::updateDirection()
+    void PerspectiveCamera::update_direction()
     {
-        float rpitch = glm::radians(m_pitch);
-        float ryaw = glm::radians(m_yaw);
+        m_direction.x = cos(m_yaw) * cos(m_pitch);
+        m_direction.y = sin(m_pitch);
+        m_direction.z = sin(m_yaw) * cos(m_pitch);
 
-        m_direction.x = cos(ryaw) * cos(rpitch);
-        m_direction.y = sin(rpitch);
-        m_direction.z = sin(ryaw) * cos(rpitch);
+        update_vectors();
+    }
 
+    void PerspectiveCamera::update_orientation()
+    {
+        m_pitch = asin(m_direction.y);
+        m_yaw = atan2(m_direction.z, m_direction.x);
+        update_vectors();
+    }
+
+    void PerspectiveCamera::update_vectors()
+    {
         m_rightVector = glm::normalize(glm::cross(m_direction, YAxisVector));
         m_lookVector = -glm::normalize(glm::cross(m_rightVector, YAxisVector));
     }

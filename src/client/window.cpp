@@ -62,6 +62,7 @@ namespace nith
         m_open = true;
         m_nativeWindow = glfwCreateWindow(m_width, m_height, m_title.c_str(),
             nullptr, nullptr);
+        glfwSetInputMode(m_nativeWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
         if (m_nativeWindow == nullptr)
         {

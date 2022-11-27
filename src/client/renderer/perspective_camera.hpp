@@ -25,15 +25,20 @@ namespace nith
 
         void setPosition(const v3& position) { m_position = position; }
         f32 setAspect(const f32& aspect) { m_aspect = aspect; }
-        f32 setYaw(const f32& yaw) { m_yaw = yaw; updateDirection(); }
-        f32 setPitch(const f32& pitch) { m_pitch = pitch; updateDirection(); }
+        f32 setYaw(const f32& yaw) { m_yaw = yaw; update_direction(); }
+        f32 setPitch(const f32& pitch) { m_pitch = pitch; update_direction(); }
         
-        f32 setOrientation(const f32& pitch, const f32& yaw) 
+        void setOrientation(const f32& pitch, const f32& yaw) 
         {
-            m_pitch = std::min(std::max(pitch, -89.0f), +89.0f);
+            m_pitch =  std::min(std::max(pitch, -3.14f/2), +3.14f/2);
             m_yaw = yaw;
 
-            updateDirection();
+            update_direction();
+        }
+
+        void setDirection(const v3& direction) {
+            m_direction = glm::normalize(direction);
+            update_orientation();
         }
 
         f32 setFov(const f32& fov) { m_fov = fov; }
@@ -44,7 +49,11 @@ namespace nith
         
     private:
 
-        void updateDirection();
+        void update_direction();
+
+        void update_orientation();
+
+        void update_vectors();
 
         v3 m_position;
         v3 m_direction;
