@@ -2,22 +2,22 @@
 
 namespace nith::gl
 {
-    GLenum ToGLDataType(const BufferDataType& type)
+    GLenum ConvertToGLEnum(const GLDataType& type)
     {
         switch (type)
         {
-        case BufferDataType::Short:
+        case GLDataType::Short:
             return GL_SHORT;
-        case BufferDataType::Ushort:
+        case GLDataType::Ushort:
             return GL_UNSIGNED_SHORT;
-        case BufferDataType::Int:
+        case GLDataType::Int:
             return GL_INT;
-        case BufferDataType::Uint:
+        case GLDataType::Uint:
             return GL_UNSIGNED_INT;
-        case BufferDataType::Vec2:
-        case BufferDataType::Vec3:
-        case BufferDataType::Vec4:
-        case BufferDataType::Float:
+        case GLDataType::Vec2:
+        case GLDataType::Vec3:
+        case GLDataType::Vec4:
+        case GLDataType::Float:
             return GL_FLOAT;
         default:
             NITH_CLIENT_ASSERT(0, "Buffer data type is invalid");
@@ -25,21 +25,24 @@ namespace nith::gl
         }
     }
 
-    u32 GetGLDataComponentCount(const BufferDataType& type)
+    u32 GetGLComponentCount(const GLDataType& type)
     {
         switch (type)
         {
-        case BufferDataType::Short:
-        case BufferDataType::Ushort:
-        case BufferDataType::Int:
-        case BufferDataType::Uint:
-        case BufferDataType::Float:
+        case GLDataType::Short:
+        case GLDataType::Ushort:
+        case GLDataType::Int:
+        case GLDataType::Uint:
+        case GLDataType::Float:
             return 1;
-        case BufferDataType::Vec2:
+        case GLDataType::Vec2:
+        case GLDataType::Ivec2:
             return 2;
-        case BufferDataType::Vec3:
+        case GLDataType::Vec3:
+        case GLDataType::Ivec3:
             return 3;
-        case BufferDataType::Vec4:
+        case GLDataType::Vec4:
+        case GLDataType::Ivec4:
             return 4;
         default:
             NITH_CLIENT_ASSERT(0, "Buffer data type is invalid");
@@ -47,7 +50,7 @@ namespace nith::gl
         }
     }
 
-    u32 GetGLDataTypeSize(const GLenum& type)
+    u32 GetGLSize(const GLenum& type)
     {
         switch (type)
         {
@@ -82,12 +85,12 @@ namespace nith::gl
             m_type = 0;
             break;
         }
+
+        glGenBuffers(1, &m_id);
     }
 
-    void Buffer::set_data(void* data, const u32& size)
+    void Buffer::setData(void* data, const u32& size)
     {
-        bind();
-
         if (size > m_capacity)
         {
             glBufferData(m_type, size, data, m_usage);
@@ -117,19 +120,16 @@ namespace nith::gl
 
     Buffer::~Buffer()
     {
-        if (m_id != 0)
-        {
-            glDeleteBuffers(1, &m_id);
-        }
+        glDeleteBuffers(1, &m_id);
     }
     
     VertexBuffer::VertexBuffer():
         Buffer(BufferType::Vertex)
     {}
 
-    IndexBuffer::IndexBuffer(const BufferDataType& type):
+    IndexBuffer::IndexBuffer(const GLDataType& type):
         Buffer(BufferType::Index),
-        m_indexType(ToGLDataType(type))
+        m_indexType(ConvertToGLEnum(type))
     {}
 
 

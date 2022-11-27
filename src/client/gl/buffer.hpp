@@ -8,7 +8,7 @@ namespace nith::gl
         Index
     };
 
-    enum class BufferDataType
+    enum class GLDataType
     {
         None = 0,
         Short,
@@ -18,7 +18,10 @@ namespace nith::gl
         Float,
         Vec2,
         Vec3,
-        Vec4
+        Vec4,
+        Ivec2,
+        Ivec3,
+        Ivec4,
     };
 
     enum class BufferUsageType
@@ -28,35 +31,27 @@ namespace nith::gl
         DynamicDraw
     };
 
-    struct BufferElement
-    {
-        BufferDataType dataType;
-        bool normalized;
-    };
-
-    struct BufferLayout
-    {
-        u32 stride;
-        std::vector<BufferElement> elements;
-    };
-
     class Buffer
     {
     public:
         Buffer(const BufferType& type);
         ~Buffer();
 
-        GLuint getId() const;
-
-        void create();
+        GLuint getId() const { return m_id; }
 
         template<typename T>
-        void setData(const std::vector<T> data);
+        void setData(const std::vector<T>& data)
+        {
+            setData(data.data(), data.size());
+        }
 
-        template<typename T>
-        void setData(T* data, const u32& size);
+        void setData(void* data, const u32& size);
 
-        void bind() const;
+        void bind() const
+        {
+            NITH_CLIENT_ASSERT(m_id != 0, "Buffer is not created");
+            glBindBuffer(m_type, m_id);
+        }
 
         void setUsage(const BufferUsageType& usage);
 
@@ -79,44 +74,13 @@ namespace nith::gl
     class IndexBuffer : public Buffer
     {
     public:
-        IndexBuffer(const BufferDataType& type);
-
-        GLenum getIndexType() const;
-
+        IndexBuffer(const GLDataType& type);
+        GLenum getIndexType() const { return m_indexType; }
     private:
         GLenum m_indexType;
     };
 
-    inline void Buffer::create()
-    {
-        glGenBuffers(1, &m_id);
-    }
-
-    inline GLuint Buffer::getId() const
-    {
-        return m_id;
-    }
-
-    inline void Buffer::bind() const
-    {
-        NITH_CLIENT_ASSERT(m_id != 0, "Buffer is not created");
-        glBindBuffer(m_type, m_id);
-    }
-
-    template<typename T>
-    void Buffer::setData(T* data, const u32& size)
-    {
-        set_data(data, size * sizeof(T));
-    }
-
-    inline GLenum IndexBuffer::getIndexType() const
-    {
-        return m_indexType;
-    }
-
-    u32 GetGLDataComponentCount(const BufferDataType& type);
-
-    GLenum ToGLDataType(const BufferDataType& type);
-
-    u32 GetGLDataTypeSize(const GLenum& type);
+    GLenum ConvertToGLEnum(const GLDataType& type);
+    u32 GetGLComponentCount(const GLDataType& type);
+    u32 GetGLSize(const GLenum& type);
 }

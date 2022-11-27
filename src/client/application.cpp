@@ -78,64 +78,74 @@ namespace nith
             "D:/github/nith/assets/shaders/basic_material.frag");
 
         gl::VertexArray vao;
-        gl::VertexBuffer vbo1, vbo2;
-        gl::IndexBuffer ebo(gl::BufferDataType::Uint);
+        gl::VertexBuffer vbo;
+        gl::IndexBuffer ebo(gl::GLDataType::Uint);
 
-        vao.create();
-        vbo1.create();
-        vbo2.create();
-        ebo.create();
-
-        u32 indices[] = { 0, 1, 2, 0, 2, 3,  };
+        u32 indices[] = { 0, 1, 2, 0, 2, 3  };
         f32 vertices[] = {
-            0.5f,  0.5f, 0.0f, 
-             0.5f, -0.5f, 0.0f,
-            -0.5f, -0.5f, 0.0f,
-            -0.5f,  0.5f, 0.0f,
-        };
-        f32 color[] = {
-            1.0f, 1.0f, 1.0f,
-             0.0f, 0.0f, 0.0f,
-             0.0f, 0.0f, 0.0f,
-             0.0f, 0.0f, 0.0f,
+            -0.5f, -0.5f, -0.5f,  0.0f, 0.0f, 0.0f,
+             0.5f, -0.5f, -0.5f,  1.0f, 0.0f, 0.0f,
+             0.5f,  0.5f, -0.5f,  1.0f, 1.0f, 0.0f,
+             0.5f,  0.5f, -0.5f,  1.0f, 1.0f, 0.0f,
+            -0.5f,  0.5f, -0.5f,  0.0f, 1.0f, 0.0f,
+            -0.5f, -0.5f, -0.5f,  0.0f, 0.0f, 0.0f,
+
+            -0.5f, -0.5f,  0.5f,  0.0f, 0.0f, 0.25f,
+             0.5f, -0.5f,  0.5f,  1.0f, 0.0f, 0.25f,
+             0.5f,  0.5f,  0.5f,  1.0f, 1.0f, 0.25f,
+             0.5f,  0.5f,  0.5f,  1.0f, 1.0f, 0.25f,
+            -0.5f,  0.5f,  0.5f,  0.0f, 1.0f, 0.25f,
+            -0.5f, -0.5f,  0.5f,  0.0f, 0.0f, 0.25f,
+
+            -0.5f,  0.5f,  0.5f,  1.0f, 0.0f, 0.5f,
+            -0.5f,  0.5f, -0.5f,  1.0f, 1.0f, 0.5f,
+            -0.5f, -0.5f, -0.5f,  0.0f, 1.0f, 0.5f,
+            -0.5f, -0.5f, -0.5f,  0.0f, 1.0f, 0.5f,
+            -0.5f, -0.5f,  0.5f,  0.0f, 0.0f, 0.5f,
+            -0.5f,  0.5f,  0.5f,  1.0f, 0.0f, 0.5f,
+
+             0.5f,  0.5f,  0.5f,  1.0f, 0.0f, 0.75f,
+             0.5f,  0.5f, -0.5f,  1.0f, 1.0f, 0.75f,
+             0.5f, -0.5f, -0.5f,  0.0f, 1.0f, 0.75f,
+             0.5f, -0.5f, -0.5f,  0.0f, 1.0f, 0.75f,
+             0.5f, -0.5f,  0.5f,  0.0f, 0.0f, 0.75f,
+             0.5f,  0.5f,  0.5f,  1.0f, 0.0f, 0.75f,
+
+            -0.5f, -0.5f, -0.5f,  0.0f, 1.0f, 0.8f,
+             0.5f, -0.5f, -0.5f,  1.0f, 1.0f, 0.8f,
+             0.5f, -0.5f,  0.5f,  1.0f, 0.0f, 0.8f,
+             0.5f, -0.5f,  0.5f,  1.0f, 0.0f, 0.8f,
+            -0.5f, -0.5f,  0.5f,  0.0f, 0.0f, 0.8f,
+            -0.5f, -0.5f, -0.5f,  0.0f, 1.0f, 0.8f,
+
+            -0.5f,  0.5f, -0.5f,  0.0f, 1.0f, 1.0f,
+             0.5f,  0.5f, -0.5f,  1.0f, 1.0f, 1.0f,
+             0.5f,  0.5f,  0.5f,  1.0f, 0.0f, 1.0f,
+             0.5f,  0.5f,  0.5f,  1.0f, 0.0f, 1.0f,
+            -0.5f,  0.5f,  0.5f,  0.0f, 0.0f, 1.0f,
+            -0.5f,  0.5f, -0.5f,  0.0f, 1.0f, 1.0f,
         };
 
-        vbo1.bind();
-        vbo1.setData(vertices, sizeof(vertices));
+        vbo.bind();
+        vbo.setUsage(gl::BufferUsageType::DynamicDraw);
+        vbo.setData(vertices, sizeof(vertices));
 
-        vbo2.bind();
-        vbo2.setData(color, sizeof(color));
-        
         ebo.bind();
         ebo.setData(indices, sizeof(indices));
 
         vao.bind();
-
-        std::vector<gl::BufferElement> elms;
-
-        elms.push_back(gl::BufferElement{
-            .dataType = gl::BufferDataType::Vec3,
-            .normalized = false,
+        //vao.setIndex(&ebo);
+        vao.setDrawCount(6 * 6);
+        vao.setAttributes({
+            { gl::GLDataType::Vec3 },
+            { gl::GLDataType::Vec3 }
         });
-
-        vao.addBuffer(vbo1, {
-            .stride = 3 * 4,
-            .elements = elms,
-        });
-
-        vao.addBuffer(vbo2, {
-            .stride = 3 * 4,
-            .elements = elms,
-            });
-
-        vao.setIndex(&ebo);
-
-        vao.setDrawCount(6);
 
         PerspectiveCamera camera(glm::radians(50.0f), m_mainWindow.getAspect(), 0.2, 2000);
         camera.setPosition({ 0, 0, 10 });
         camera.updateProjectionViewMatrix();
 
+        glEnable(GL_DEPTH_TEST);
 
         io::Input::GetEventDispatcher().addEventListener<io::MouseMovedEvent>(
            [&](const io::MouseMovedEvent& event)
