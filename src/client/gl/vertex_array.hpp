@@ -24,12 +24,14 @@ namespace nith::gl
         
         void bind() const { glBindVertexArray(m_id); }
 
-        void setAttributes(const std::initializer_list<VertexArrayAttribute>& attributes);
+        void setBuffer(const VertexBuffer& buffer,
+            const std::initializer_list<VertexArrayAttribute>& attributes);
 
-        void setIndex(IndexBuffer* buffer)
+        void setIndex(const IndexBuffer& buffer)
         {
-            m_indexType = buffer->getIndexType();
-            buffer->bind();
+            bind();
+            m_indexType = buffer.getIndexType();
+            buffer.bind();
         }
 
         void draw() const;

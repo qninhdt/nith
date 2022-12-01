@@ -2,7 +2,7 @@
 
 namespace nith
 {
-    class PerspectiveCamera
+    class Camera
     {
     public:
 
@@ -10,8 +10,7 @@ namespace nith
         static const v3 YAxisVector;
         static const v3 ZAxisVector;
 
-        PerspectiveCamera(const f32& fov, const f32& aspect,
-            const f32& near, const f32& far);
+        Camera(const f32& aspect, const f32& near, const f32& far);
 
         const v3& getPostion() const { return m_position; }
         const v3& getDirection() const { return m_direction; }
@@ -21,16 +20,15 @@ namespace nith
         f32 getAspect() const { return m_aspect; }
         f32 getYaw() const { return m_yaw; }
         f32 getPitch() const { return m_pitch; }
-        f32 getFov() const { return m_fov; }
 
         void setPosition(const v3& position) { m_position = position; }
         f32 setAspect(const f32& aspect) { m_aspect = aspect; }
         f32 setYaw(const f32& yaw) { m_yaw = yaw; update_direction(); }
         f32 setPitch(const f32& pitch) { m_pitch = pitch; update_direction(); }
-        
-        void setOrientation(const f32& pitch, const f32& yaw) 
+
+        void setOrientation(const f32& pitch, const f32& yaw)
         {
-            m_pitch =  std::min(std::max(pitch, -3.14f/2), +3.14f/2);
+            m_pitch = std::min(std::max(pitch, -3.14f / 2), +3.14f / 2);
             m_yaw = yaw;
 
             update_direction();
@@ -41,13 +39,11 @@ namespace nith
             update_orientation();
         }
 
-        f32 setFov(const f32& fov) { m_fov = fov; }
-
-        void updateProjectionMatrix();
+        virtual void updateProjectionMatrix() = 0;
         void updateViewMatrix();
         void updateProjectionViewMatrix();
-        
-    private:
+
+    protected:
 
         void update_direction();
 
@@ -60,7 +56,6 @@ namespace nith
         f32 m_yaw;
         f32 m_pitch;
         f32 m_aspect;
-        f32 m_fov;
         f32 m_near;
         f32 m_far;
         f32 m_zoom;

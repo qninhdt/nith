@@ -24,12 +24,15 @@ namespace nith::gl
         }
     }
 
-
-    void VertexArray::setAttributes(const std::initializer_list<VertexArrayAttribute>& attributes)
+    void VertexArray::setBuffer(const VertexBuffer& buffer,
+        const std::initializer_list<VertexArrayAttribute>& attributes)
     {
         u32 offset = 0;
         u32 attrCount = 0;
         u32 stride = 0;
+
+        bind();
+        buffer.bind();
 
         // compute stride side
         for (auto& attr : attributes)
@@ -90,9 +93,6 @@ namespace nith::gl
 
     VertexArray::~VertexArray()
     {
-        if (m_id != 0)
-        {
-            glDeleteVertexArrays(1, &m_id);
-        }
+        glDeleteVertexArrays(1, &m_id);
     }
 }

@@ -42,7 +42,7 @@ namespace nith::gl
         template<typename T>
         void setData(const std::vector<T>& data)
         {
-            setData(data.data(), data.size());
+            setData((void*) data.data(), data.size() * sizeof(T));
         }
 
         void setData(void* data, const u32& size);
@@ -56,8 +56,6 @@ namespace nith::gl
         void setUsage(const BufferUsageType& usage);
 
     private:
-
-        void set_data(void* data, const u32& size);
 
         GLuint m_id;
         GLenum m_type;

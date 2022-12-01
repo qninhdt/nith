@@ -91,6 +91,7 @@ namespace nith::gl
 
     void Buffer::setData(void* data, const u32& size)
     {
+        bind();
         if (size > m_capacity)
         {
             glBufferData(m_type, size, data, m_usage);

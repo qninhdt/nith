@@ -1,9 +1,10 @@
 #include "client/application.hpp"
+#include "client/camera_controller.hpp"
 
 // TODO: remove later
 #include "client/gl/vertex_array.hpp"
 #include "client/gl/shader.hpp"
-#include "client/renderer/perspective_camera.hpp"
+#include "client/perspective_camera.hpp"
 #include "client/io/input.hpp"
 #include "client/io/input_event.hpp"
 
@@ -126,24 +127,24 @@ namespace nith
             -0.5f,  0.5f, -0.5f,  0.0f, 1.0f, 1.0f,
         };
 
-        vbo.bind();
+        std::vector<f32> shit(vertices, vertices + 216);
+        shit.resize(1024 * 1024);
+ 
         vbo.setUsage(gl::BufferUsageType::DynamicDraw);
-        vbo.setData(vertices, sizeof(vertices));
+        vbo.setData(shit);
 
-        ebo.bind();
         ebo.setData(indices, sizeof(indices));
 
-        vao.bind();
-        //vao.setIndex(&ebo);
+        //vao.setIndex(ebo);
         vao.setDrawCount(6 * 6);
-        vao.setAttributes({
+        vao.setBuffer(vbo, {
             { gl::GLDataType::Vec3 },
             { gl::GLDataType::Vec3 }
         });
 
         PerspectiveCamera camera(glm::radians(50.0f), m_mainWindow.getAspect(), 0.2, 2000);
         camera.setPosition({ 0, 0, 10 });
-        camera.updateProjectionViewMatrix();
+        camera.updateViewMatrix();
 
         glEnable(GL_DEPTH_TEST);
 
