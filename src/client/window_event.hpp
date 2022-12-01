@@ -60,7 +60,7 @@ namespace nith
 
         inline u32 getHeight() const
         {
-            return m_width;
+            return m_height;
         }
 
         void toString(std::ostream& output) const override;

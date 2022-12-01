@@ -17,12 +17,14 @@ namespace nith
         const mat4& getProjectionMaxtrix() const { return m_projectionMatrix; }
         const mat4& getViewMaxtrix() const { return m_viewMatrix; }
         const mat4& getProjectionViewMaxtrix() const { return m_projectionViewMatrix; }
+        const v3& getLookVector() const { return m_lookVector; }
+        const v3& getRightVector() const { return m_rightVector; }
         f32 getAspect() const { return m_aspect; }
         f32 getYaw() const { return m_yaw; }
         f32 getPitch() const { return m_pitch; }
 
         void setPosition(const v3& position) { m_position = position; }
-        f32 setAspect(const f32& aspect) { m_aspect = aspect; }
+        void setAspect(const f32& aspect) { m_aspect = aspect; }
         f32 setYaw(const f32& yaw) { m_yaw = yaw; update_direction(); }
         f32 setPitch(const f32& pitch) { m_pitch = pitch; update_direction(); }
 

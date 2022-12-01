@@ -10,27 +10,19 @@
 
 namespace nith
 {
+    float Application::s_deltaTime = 1.0f / 60;
+
     Application::Application():
-        m_mainWindow("lmao gay", 800, 600)
+        m_mainWindow("lmao gay", 800, 600),
+        m_cameraController(10, 0.005)
     {
         init_everything();
+
         m_mainWindow.open();
+        m_mainWindow.setClearColor({ 0, 0, 0, 1 });
 
         io::Input::SetCurrentWindow(&m_mainWindow);
 
-        m_mainWindow.addEventListener<WindowClosedEvent>(
-            [](const WindowClosedEvent& event)
-            {
-                std::cout << event << '\n';
-            }
-        );
-
-        m_mainWindow.addEventListener<WindowResizedEvent>(
-            [](const WindowResizedEvent& event)
-            {
-                std::cout << event << '\n';
-            }
-        );
         io::Input::GetEventDispatcher()
             .addEventListener<io::KeyPressedEvent>(
             [&](const io::KeyPressedEvent& event)
@@ -40,15 +32,7 @@ namespace nith
                     m_mainWindow.close();
                 }
             }
-        );
-
-        io::Input::GetEventDispatcher()
-            .addEventListener<io::KeyReleasedEvent>(
-            [](const io::KeyReleasedEvent& event)
-            {
-                std::cout << event << '\n';
-            }
-        );
+        );   
     }
 
     void Application::init_everything()
@@ -146,52 +130,30 @@ namespace nith
         camera.setPosition({ 0, 0, 10 });
         camera.updateViewMatrix();
 
-        glEnable(GL_DEPTH_TEST);
-
-        io::Input::GetEventDispatcher().addEventListener<io::MouseMovedEvent>(
-           [&](const io::MouseMovedEvent& event)
-           {
-               double pitch = camera.getPitch();
-               double yaw = camera.getYaw();
-               double deltaX = event.getMouseDeltaX();
-               double deltaY = event.getMouseDeltaY();
-
-               yaw += deltaX/1000;
-               pitch -= deltaY/1000;
-
-               camera.setOrientation(pitch, yaw);
-               camera.updateViewMatrix();
-           }
+        m_mainWindow.addEventListener<WindowResizedEvent>(
+            [&](const WindowResizedEvent& event)
+            {
+                camera.setAspect(1.0f * event.getWidth() / event.getHeight());
+                camera.updateProjectionMatrix();
+            }
         );
 
+        m_cameraController.connect(&camera);
+
+        glEnable(GL_DEPTH_TEST);
+
+        auto lastTime = std::chrono::steady_clock::now();
 
         while (m_mainWindow.isOpen())
         {
+            // input
+            m_cameraController.update();
+
+            // render
             m_mainWindow.beginLoop();
 
             shader.use();
             
-            v3 position = camera.getPostion();
-
-            if (io::Input::IsKeyPressed(io::KeyCode::A))
-            {
-                position.x -= 0.001;
-            }
-            if (io::Input::IsKeyPressed(io::KeyCode::D))
-            {
-                position.x += 0.001;
-            }
-            if (io::Input::IsKeyPressed(io::KeyCode::W))
-            {
-                position.z -= 0.001;
-            }
-            if (io::Input::IsKeyPressed(io::KeyCode::S))
-            {
-                position.z += 0.001;
-            }
-
-            camera.setPosition(position);
-            camera.updateViewMatrix();
             shader.setMat4(shader.getUniformLocation("model"),
                 glm::translate(glm::mat4(1.0f), { 1, 0, 0 }));
 
@@ -200,6 +162,11 @@ namespace nith
 
             vao.draw();
             m_mainWindow.endLoop();
+
+            // compute deltaTime
+            auto currentTime = std::chrono::steady_clock::now();
+            s_deltaTime = (currentTime - lastTime).count()/1000000000.0f;
+            lastTime = currentTime;
         }
     }
 
