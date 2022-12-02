@@ -28,4 +28,10 @@ namespace nith::util {
         file.close();
         return true;
     }
+
+    std::string GetFileNameFromPath(const std::string& path)
+    {
+        std::filesystem::path pathObj(path);
+        return pathObj.stem().string();
+    }
 }

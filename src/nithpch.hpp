@@ -7,6 +7,7 @@
 #include <fstream>
 #include <sstream>
 #include <iostream>
+#include <filesystem>
 #include <memory>
 #include <functional>
 #include <algorithm>
@@ -20,6 +21,7 @@
 #include <glm/glm.hpp>
 #include <glm/ext/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <glm/gtx/euler_angles.hpp>
 #include <spdlog/spdlog.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
 #include <eventpp/eventdispatcher.h>

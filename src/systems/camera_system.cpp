@@ -16,11 +16,13 @@ namespace nith
                 auto view = registry.view<Camera, Transform>();
                 for (auto [entity, camera, transform] : view.each())
                 {
-                    transform.rotation.x -= deltaY * camera.sensitive;
-                    transform.rotation.y -= deltaX * camera.sensitive;
-                    if (transform.rotation.x > +3.14 / 2) transform.rotation.x = +3.14 / 2;
-                    if (transform.rotation.x < -3.14 / 2) transform.rotation.x = -3.14 / 2;
-                    camera.updateViewMatrix(transform);
+                    if (!camera.window->isShowCursor()) {
+                        transform.rotation.x -= deltaY * camera.sensitive;
+                        transform.rotation.y -= deltaX * camera.sensitive;
+                        if (transform.rotation.x > +3.14 / 2) transform.rotation.x = +3.14 / 2;
+                        if (transform.rotation.x < -3.14 / 2) transform.rotation.x = -3.14 / 2;
+                        camera.updateViewMatrix(transform);
+                    }
                 }
             }
         );

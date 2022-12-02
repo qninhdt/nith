@@ -9,6 +9,7 @@ namespace nith
         m_height(height),
         m_open(false),
         m_vSync(false),
+        m_showCursor(true),
         m_nativeWindow(nullptr),
         m_clearColor(1, 1, 1, 1)
     {
@@ -57,12 +58,25 @@ namespace nith
         }
     }
 
+    void Window::toggleCursor()
+    {
+        if (m_showCursor)
+        {
+            glfwSetInputMode(m_nativeWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+        }
+        else
+        {
+            glfwSetInputMode(m_nativeWindow, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+        }
+
+        m_showCursor = !m_showCursor;
+    }
+
     void Window::open()
     {
         m_open = true;
         m_nativeWindow = glfwCreateWindow(m_width, m_height, m_title.c_str(),
             nullptr, nullptr);
-        glfwSetInputMode(m_nativeWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
         if (m_nativeWindow == nullptr)
         {

@@ -1,4 +1,5 @@
 #include "application.hpp"
+#include "loaders/shader_loader.hpp"
 
 // TODO: remove later
 #include "gl/vertex_array.hpp"
@@ -6,6 +7,8 @@
 #include "io/input.hpp"
 #include "io/input_event.hpp"
 #include "systems/camera_system.hpp"
+#include "systems/cube_system.hpp"
+#include "renderer/cube_mesh.hpp"
 
 namespace nith
 {
@@ -18,6 +21,11 @@ namespace nith
 
         m_mainWindow.open();
         m_mainWindow.setClearColor({ 0, 0, 0, 1 });
+        m_mainWindow.toggleCursor(); // hide curosr by default
+
+        // load resources
+        ShaderLoader::Init();
+        ShaderLoader::LoadAll();
 
         io::Input::SetCurrentWindow(&m_mainWindow);
 
@@ -28,6 +36,10 @@ namespace nith
                 if (event.getKeyCode() == io::KeyCode::Escape)
                 {
                     m_mainWindow.close();
+                }
+                else if (event.getKeyCode() == io::KeyCode::F1 && !event.isRepeat())
+                {
+                    m_mainWindow.toggleCursor();
                 }
             }
         );
@@ -57,74 +69,7 @@ namespace nith
     {
         m_mainWindow.makeCurrent();
 
-        gl::Shader shader("basic_shader");
-
-        shader.loadFromFile("D:/github/nith/assets/shaders/basic_material.vert",
-            "D:/github/nith/assets/shaders/basic_material.frag");
-
-        gl::VertexArray vao;
-        gl::VertexBuffer vbo;
-        gl::IndexBuffer ebo(gl::GLDataType::Uint);
-
-        u32 indices[] = { 0, 1, 2, 0, 2, 3  };
-        f32 vertices[] = {
-            -0.5f, -0.5f, -0.5f,  0.0f, 0.0f, 0.0f,
-             0.5f, -0.5f, -0.5f,  1.0f, 0.0f, 0.0f,
-             0.5f,  0.5f, -0.5f,  1.0f, 1.0f, 0.0f,
-             0.5f,  0.5f, -0.5f,  1.0f, 1.0f, 0.0f,
-            -0.5f,  0.5f, -0.5f,  0.0f, 1.0f, 0.0f,
-            -0.5f, -0.5f, -0.5f,  0.0f, 0.0f, 0.0f,
-
-            -0.5f, -0.5f,  0.5f,  0.0f, 0.0f, 0.25f,
-             0.5f, -0.5f,  0.5f,  1.0f, 0.0f, 0.25f,
-             0.5f,  0.5f,  0.5f,  1.0f, 1.0f, 0.25f,
-             0.5f,  0.5f,  0.5f,  1.0f, 1.0f, 0.25f,
-            -0.5f,  0.5f,  0.5f,  0.0f, 1.0f, 0.25f,
-            -0.5f, -0.5f,  0.5f,  0.0f, 0.0f, 0.25f,
-
-            -0.5f,  0.5f,  0.5f,  1.0f, 0.0f, 0.5f,
-            -0.5f,  0.5f, -0.5f,  1.0f, 1.0f, 0.5f,
-            -0.5f, -0.5f, -0.5f,  0.0f, 1.0f, 0.5f,
-            -0.5f, -0.5f, -0.5f,  0.0f, 1.0f, 0.5f,
-            -0.5f, -0.5f,  0.5f,  0.0f, 0.0f, 0.5f,
-            -0.5f,  0.5f,  0.5f,  1.0f, 0.0f, 0.5f,
-
-             0.5f,  0.5f,  0.5f,  1.0f, 0.0f, 0.75f,
-             0.5f,  0.5f, -0.5f,  1.0f, 1.0f, 0.75f,
-             0.5f, -0.5f, -0.5f,  0.0f, 1.0f, 0.75f,
-             0.5f, -0.5f, -0.5f,  0.0f, 1.0f, 0.75f,
-             0.5f, -0.5f,  0.5f,  0.0f, 0.0f, 0.75f,
-             0.5f,  0.5f,  0.5f,  1.0f, 0.0f, 0.75f,
-
-            -0.5f, -0.5f, -0.5f,  0.0f, 1.0f, 0.8f,
-             0.5f, -0.5f, -0.5f,  1.0f, 1.0f, 0.8f,
-             0.5f, -0.5f,  0.5f,  1.0f, 0.0f, 0.8f,
-             0.5f, -0.5f,  0.5f,  1.0f, 0.0f, 0.8f,
-            -0.5f, -0.5f,  0.5f,  0.0f, 0.0f, 0.8f,
-            -0.5f, -0.5f, -0.5f,  0.0f, 1.0f, 0.8f,
-
-            -0.5f,  0.5f, -0.5f,  0.0f, 1.0f, 1.0f,
-             0.5f,  0.5f, -0.5f,  1.0f, 1.0f, 1.0f,
-             0.5f,  0.5f,  0.5f,  1.0f, 0.0f, 1.0f,
-             0.5f,  0.5f,  0.5f,  1.0f, 0.0f, 1.0f,
-            -0.5f,  0.5f,  0.5f,  0.0f, 0.0f, 1.0f,
-            -0.5f,  0.5f, -0.5f,  0.0f, 1.0f, 1.0f,
-        };
-
-        std::vector<f32> shit(vertices, vertices + 216);
-        shit.resize(1024 * 1024);
- 
-        vbo.setUsage(gl::BufferUsageType::DynamicDraw);
-        vbo.setData(shit);
-
-        ebo.setData(indices, sizeof(indices));
-
-        //vao.setIndex(ebo);
-        vao.setDrawCount(6 * 6);
-        vao.setBuffer(vbo, {
-            { gl::GLDataType::Vec3 },
-            { gl::GLDataType::Vec3 }
-        });
+        CubeMesh cube;
 
         auto camera = CameraSystem::CreateCamera(m_registry, m_mainWindow,
             1.0f * m_mainWindow.getWidth() / m_mainWindow.getHeight(), glm::radians(50.0f), 0.02, 2000);
@@ -138,6 +83,8 @@ namespace nith
 
         auto lastTime = std::chrono::steady_clock::now();
 
+        gl::Shader& shader = ShaderLoader::Get("cube");
+
         while (m_mainWindow.isOpen())
         {
             // input
@@ -146,10 +93,8 @@ namespace nith
             // render
             m_mainWindow.beginLoop();
 
-            shader.use();
-            
             shader.setMat4(shader.getUniformLocation("model"),
-                glm::translate(glm::mat4(1.0f), { 1, 0, 0 }));
+                glm::translate(glm::mat4(1.0f), { 0, 0, 0 }));
 
             shader.setMat4(shader.getUniformLocation("projection"),
                 m_registry.get<Camera>(camera).projectionMatrix);
@@ -157,7 +102,8 @@ namespace nith
             shader.setMat4(shader.getUniformLocation("view"),
                 m_registry.get<Camera>(camera).viewMatrix);
 
-            vao.draw();
+            shader.use();
+            cube.render();
             m_mainWindow.endLoop();
 
             // compute deltaTime

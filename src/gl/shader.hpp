@@ -24,10 +24,12 @@ namespace nith::gl
         void setVec4(const GLuint& location, const v4& value) const;
         void setMat4(const GLuint& location, const mat4& value) const;
 
-        void loadFromFile(const char* vertexPath,const char* fragmentPath);
+        bool loadFromFile(const char* vertexPath,const char* fragmentPath, const bool& log = true);
 
-        void loadFromSource(const std::string& vertexSource,
-            const std::string& fragmentSource);
+        bool loadFromSource(const std::string& vertexSource,
+            const std::string& fragmentSource, const bool& log = true);
+
+        bool reload();
 
         void use() const;
 
@@ -35,6 +37,8 @@ namespace nith::gl
 
     private:
         GLuint m_programId;
+        std::string m_vertPath;
+        std::string m_fragPath;
         std::string m_name;
     };
 

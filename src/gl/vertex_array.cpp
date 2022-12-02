@@ -31,7 +31,6 @@ namespace nith::gl
         u32 attrCount = 0;
         u32 stride = 0;
 
-        bind();
         buffer.bind();
 
         // compute stride side

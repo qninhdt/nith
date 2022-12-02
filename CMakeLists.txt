@@ -6,11 +6,15 @@ set(NITH_CLIENT_SOURCES
     "src/gl/shader.cpp"
     "src/gl/vertex_array.cpp"
     "src/gl/buffer.cpp"
+    "src/renderer/mesh.cpp"
+    "src/renderer/cube_mesh.cpp"
     "src/nith_client_main.cpp"
     "src/application.cpp"
     "src/window.cpp"
     "src/io/input.cpp"
     "src/systems/camera_system.cpp"
+    "src/systems/cube_system.cpp"
+    "src/loaders/shader_loader.cpp"
 )
  
 set(NITH_UTIL_SOURCES

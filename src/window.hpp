@@ -31,6 +31,8 @@ namespace nith
 
         bool isOpen() const { return m_open; }
 
+        bool isShowCursor() const { return m_showCursor; }
+
         GLFWwindow* getNativeWindow() const { return m_nativeWindow; }
 
         void setTitle(const std::string& title);
@@ -67,6 +69,8 @@ namespace nith
         /// May cause bugs.
         void closeImmediately();
 
+        void toggleCursor();
+
         /// @brief set current window to this window.
         void makeCurrent() const
         {
@@ -83,6 +87,7 @@ namespace nith
         u32 m_height;
         bool m_vSync;
         bool m_open;
+        bool m_showCursor;
         std::string m_title;
         v4 m_clearColor;
     };

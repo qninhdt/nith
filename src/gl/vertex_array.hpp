@@ -29,7 +29,6 @@ namespace nith::gl
 
         void setIndex(const IndexBuffer& buffer)
         {
-            bind();
             m_indexType = buffer.getIndexType();
             buffer.bind();
         }

@@ -22,7 +22,14 @@
 #endif
 #endif
 
+//#ifdef NITH_DEBUG
+//#else
+//#define NITH_ROOT ""
+//#endif
+
 namespace nith {
+
+    static const std::string NITH_ROOT = "D:/github/nith/";
 
     using i8  = std::int8_t;
     using i16 = std::int16_t;
