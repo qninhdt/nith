@@ -1,6 +1,6 @@
 #pragma once
 
-#include "client/window_event.hpp"
+#include "window_event.hpp"
 
 namespace nith
 {

@@ -39,8 +39,6 @@ namespace nith
             WindowEvent(WindowEventType::WindowClosed, window)
         {}
 
-        void toString(std::ostream& output) const override;
-
         NITH_EVENT_CLASS(WindowEventType, WindowClosed)
     };
 
@@ -62,8 +60,6 @@ namespace nith
         {
             return m_height;
         }
-
-        void toString(std::ostream& output) const override;
 
         NITH_EVENT_CLASS(WindowEventType, WindowResized)
 
@@ -89,8 +85,6 @@ namespace nith
         {
             return m_posY;
         }
-
-        void toString(std::ostream& output) const override;
 
         NITH_EVENT_CLASS(WindowEventType, WindowMoved)
 

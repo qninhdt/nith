@@ -1,4 +1,4 @@
-#include "client/io/input.hpp"
+#include "io/input.hpp"
 
 namespace nith::io
 {

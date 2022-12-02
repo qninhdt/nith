@@ -1,4 +1,4 @@
-#include "client/gl/shader.hpp"
+#include "gl/shader.hpp"
 
 #include "util/file_util.hpp"
 

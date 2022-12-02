@@ -1,7 +1,6 @@
 #pragma once
 
-#include "client/window.hpp"
-#include "client/camera_controller.hpp"
+#include "window.hpp"
 
 namespace nith
 {
@@ -14,7 +13,7 @@ namespace nith
 
         void mainLoop();
 
-        Window& getMainWindow();
+        Window& getMainWindow() { return m_mainWindow; }
 
         static const f32& GetDeltaTime() { return s_deltaTime; }
 
@@ -24,11 +23,7 @@ namespace nith
         void init_everything();
 
         Window m_mainWindow;
-        CameraController m_cameraController;
+        entt::registry m_registry;
+        
     };
-
-    inline Window& Application::getMainWindow()
-    {
-        return m_mainWindow;
-    }
 }

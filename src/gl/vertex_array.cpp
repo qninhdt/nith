@@ -1,4 +1,4 @@
-#include "client/gl/vertex_array.hpp"
+#include "gl/vertex_array.hpp"
 
 namespace nith::gl
 {

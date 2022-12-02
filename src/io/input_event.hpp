@@ -1,7 +1,7 @@
 #pragma once
 
 #include "event.hpp"
-#include "client/io/input_defs.hpp"
+#include "io/input_defs.hpp"
 
 namespace nith::io
 {
@@ -62,11 +62,6 @@ namespace nith::io
 
         bool isRepeat() const { return m_isRepeat; }
 
-        void toString(std::ostream& output) const
-        {
-            output << "KeyPressedEvent { keyCode = " << (u32) getKeyCode() << ", isRepeat = " << (m_isRepeat ? "true" : "false") << " }";
-        }
-
         NITH_EVENT_CLASS(InputEventType, KeyPressed)
     private:
         bool m_isRepeat;
@@ -78,11 +73,6 @@ namespace nith::io
         KeyReleasedEvent(const KeyCode& keyCode) :
             KeyEvent(InputEventType::KeyReleased, keyCode)
         {}
-
-        void toString(std::ostream& output) const
-        {
-            output << "KeyReleasedEvent { keyCode = " << (u32)getKeyCode() << " }";
-        }
 
         NITH_EVENT_CLASS(InputEventType, KeyReleased)
     };
@@ -99,11 +89,6 @@ namespace nith::io
 
         f32 getMouseDeltaX() const { return m_mouseDeltaX; }
         f32 getMouseDeltaY() const { return m_mouseDeltaY; }
-
-        void toString(std::ostream& output) const
-        {
-            output << "MouseMovedEvent { mouseX = " << (u32)getMouseX() << ", mouseY = " << (u32)getMouseY() << " }";
-        }
 
         NITH_EVENT_CLASS(InputEventType, MouseMoved)
     private:

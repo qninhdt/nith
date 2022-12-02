@@ -3,18 +3,14 @@
 project (nith VERSION 1.0)
 
 set(NITH_CLIENT_SOURCES
-    "src/client/gl/shader.cpp"
-    "src/client/nith_client_main.cpp"
-    "src/client/application.cpp"
-    "src/client/window.cpp"
-    "src/client/window_event.cpp"
-    "src/client/io/input_event.cpp"
-    "src/client/io/input.cpp"
-    "src/client/gl/buffer.cpp"
-    "src/client/gl/vertex_array.cpp"
-    "src/client/camera.cpp"
-    "src/client/perspective_camera.cpp"
-    "src/client/camera_controller.cpp"
+    "src/gl/shader.cpp"
+    "src/gl/vertex_array.cpp"
+    "src/gl/buffer.cpp"
+    "src/nith_client_main.cpp"
+    "src/application.cpp"
+    "src/window.cpp"
+    "src/io/input.cpp"
+    "src/systems/camera_system.cpp"
 )
  
 set(NITH_UTIL_SOURCES
@@ -49,6 +45,9 @@ target_link_libraries(nith PRIVATE spdlog::spdlog spdlog::spdlog_header_only)
 
 find_package(eventpp CONFIG REQUIRED)
 target_link_libraries(nith PRIVATE eventpp::eventpp)
+
+find_package(EnTT CONFIG REQUIRED)
+target_link_libraries(nith PRIVATE EnTT::EnTT)
 
 target_precompile_headers(nith PRIVATE "src/nithpch.hpp")
 

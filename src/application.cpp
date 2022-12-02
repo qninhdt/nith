@@ -1,20 +1,18 @@
-#include "client/application.hpp"
-#include "client/camera_controller.hpp"
+#include "application.hpp"
 
 // TODO: remove later
-#include "client/gl/vertex_array.hpp"
-#include "client/gl/shader.hpp"
-#include "client/perspective_camera.hpp"
-#include "client/io/input.hpp"
-#include "client/io/input_event.hpp"
+#include "gl/vertex_array.hpp"
+#include "gl/shader.hpp"
+#include "io/input.hpp"
+#include "io/input_event.hpp"
+#include "systems/camera_system.hpp"
 
 namespace nith
 {
     float Application::s_deltaTime = 1.0f / 60;
 
     Application::Application():
-        m_mainWindow("lmao gay", 800, 600),
-        m_cameraController(10, 0.005)
+        m_mainWindow("lmao gay", 800, 600)
     {
         init_everything();
 
@@ -32,7 +30,9 @@ namespace nith
                     m_mainWindow.close();
                 }
             }
-        );   
+        );
+
+        CameraSystem::Init(m_registry);
     }
 
     void Application::init_everything()
@@ -126,19 +126,13 @@ namespace nith
             { gl::GLDataType::Vec3 }
         });
 
-        PerspectiveCamera camera(glm::radians(50.0f), m_mainWindow.getAspect(), 0.2, 2000);
-        camera.setPosition({ 0, 0, 10 });
-        camera.updateViewMatrix();
+        auto camera = CameraSystem::CreateCamera(m_registry, m_mainWindow,
+            1.0f * m_mainWindow.getWidth() / m_mainWindow.getHeight(), glm::radians(50.0f), 0.02, 2000);
 
-        m_mainWindow.addEventListener<WindowResizedEvent>(
-            [&](const WindowResizedEvent& event)
-            {
-                camera.setAspect(1.0f * event.getWidth() / event.getHeight());
-                camera.updateProjectionMatrix();
-            }
+        m_registry.get<Transform>(camera).position.z += 5;
+        m_registry.get<Camera>(camera).updateViewMatrix(
+            m_registry.get<Transform>(camera)
         );
-
-        m_cameraController.connect(&camera);
 
         glEnable(GL_DEPTH_TEST);
 
@@ -147,7 +141,7 @@ namespace nith
         while (m_mainWindow.isOpen())
         {
             // input
-            m_cameraController.update();
+            CameraSystem::Update(m_registry, s_deltaTime);
 
             // render
             m_mainWindow.beginLoop();
@@ -157,8 +151,11 @@ namespace nith
             shader.setMat4(shader.getUniformLocation("model"),
                 glm::translate(glm::mat4(1.0f), { 1, 0, 0 }));
 
-            shader.setMat4(shader.getUniformLocation("projection_view"),
-                camera.getProjectionViewMaxtrix());
+            shader.setMat4(shader.getUniformLocation("projection"),
+                m_registry.get<Camera>(camera).projectionMatrix);
+
+            shader.setMat4(shader.getUniformLocation("view"),
+                m_registry.get<Camera>(camera).viewMatrix);
 
             vao.draw();
             m_mainWindow.endLoop();

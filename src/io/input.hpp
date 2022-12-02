@@ -1,7 +1,7 @@
 #pragma once
 
-#include "client/window.hpp"
-#include "client/io/input_event.hpp"
+#include "window.hpp"
+#include "io/input_event.hpp"
 
 namespace nith::io
 {

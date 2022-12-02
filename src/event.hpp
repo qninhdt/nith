@@ -3,7 +3,7 @@
 namespace nith
 {
     template<typename E>
-    class Event: public DebugObject
+    class Event
     {
     public:
         Event(const E& eventType):

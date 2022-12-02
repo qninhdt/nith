@@ -1,4 +1,4 @@
-#include "client/gl/buffer.hpp"
+#include "gl/buffer.hpp"
 
 namespace nith::gl
 {

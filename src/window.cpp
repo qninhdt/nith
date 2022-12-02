@@ -1,4 +1,4 @@
-#include "client/window.hpp"
+#include "window.hpp"
 
 namespace nith
 {

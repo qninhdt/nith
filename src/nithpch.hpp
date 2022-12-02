@@ -23,8 +23,8 @@
 #include <spdlog/spdlog.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
 #include <eventpp/eventdispatcher.h>
+#include <entt/entt.hpp>
 
 // common files
 #include "common.hpp"
 #include "log.hpp"
-#include "debug_object.hpp"
