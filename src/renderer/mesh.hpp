@@ -12,7 +12,6 @@ namespace nith
             m_ibo(gl::GLDataType::Uint) 
         {
             m_vao.bind();
-            m_vbo.bind();
             m_vao.setIndex(m_ibo);
         }
 

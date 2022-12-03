@@ -14,6 +14,7 @@ set(NITH_CLIENT_SOURCES
     "src/io/input.cpp"
     "src/systems/camera_system.cpp"
     "src/systems/cube_system.cpp"
+    "src/systems/debug_system.cpp"
     "src/loaders/shader_loader.cpp"
 )
  

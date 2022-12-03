@@ -77,6 +77,8 @@ namespace nith
             glfwMakeContextCurrent(m_nativeWindow);
         }
 
+        void center();
+
     private:
 
         static void resize_handle(GLFWwindow* nativeWindow, int width, int height);

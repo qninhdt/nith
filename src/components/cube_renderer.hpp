@@ -6,6 +6,6 @@ namespace nith
 {
     struct CubeRenderer
     {
-        CubeMesh mesh;
+        CubeMesh* mesh;
     };
 }

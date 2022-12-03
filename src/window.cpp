@@ -132,6 +132,14 @@ namespace nith
         m_nativeWindow = nullptr;
     }
 
+    void Window::center()
+    {
+        const GLFWvidmode* mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+        i32 posX = mode->width / 2 - m_width / 2;
+        i32 posY = mode->height / 2 - m_height / 2;
+        glfwSetWindowPos(m_nativeWindow, posX, posY);
+    }
+
     Window::~Window()
     {
         if (m_open)
