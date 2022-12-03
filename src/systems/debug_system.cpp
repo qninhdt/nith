@@ -2,12 +2,13 @@
 #include "components/transform.hpp"
 #include "components/renderable3D.hpp"
 #include "components/debug/transform_debug.hpp"
+#include "registry.hpp"
 
 namespace nith
 {
-    void DebugSystem::Render(entt::registry& registry, const f32& deltaTime)
+    void DebugSystem::Render(const f32& deltaTime)
     {
-        auto view = registry.view<Transform, TransformDebug>();
+        auto view = Registry.view<Transform, TransformDebug>();
         for (auto [entity, transform] : view.each())
         {
             
@@ -21,7 +22,7 @@ namespace nith
 
             if (isChanged)
             {
-                auto renderable3D = registry.try_get<Renderable3D>(entity);
+                auto renderable3D = Registry.try_get<Renderable3D>(entity);
                 if (renderable3D)
                     renderable3D->updateModelMatrix(transform);
             }

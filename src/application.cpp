@@ -1,5 +1,6 @@
 #include "application.hpp"
 #include "loaders/shader_loader.hpp"
+#include "registry.hpp"
 
 // TODO: remove later
 #include "gl/vertex_array.hpp"
@@ -14,6 +15,8 @@
 namespace nith
 {
     float Application::s_deltaTime = 1.0f / 60;
+
+    entt::registry Registry; // global registry
 
     Application::Application():
         m_mainWindow("lmao gay", 1200, 850)
@@ -51,7 +54,7 @@ namespace nith
         ImGui_ImplOpenGL3_Init("#version 430");
 
         // system init
-        CameraSystem::Init(m_registry);
+        CameraSystem::Init();
     }
 
     void Application::init_everything()
@@ -91,16 +94,16 @@ namespace nith
     {
         m_mainWindow.makeCurrent();
 
-        CubeSystem::CreateCube(m_registry, { 0, 0, 0 }, { 0, 0, 0 }, { 1, 0, 0 });
-        CubeSystem::CreateCube(m_registry, { 0, 4, 0 }, { 1, 1, 1 }, { 1, 0, 0 });
-        CubeSystem::CreateCube(m_registry, { 2, 0, 0 }, { 1, 1, 1 }, { 1, 0, 0 });
+        CubeSystem::CreateCube({ 0, 0, 0 }, { 0, 0, 0 }, { 1, 0, 0 });
+        CubeSystem::CreateCube({ 0, 4, 0 }, { 1, 1, 1 }, { 1, 0, 0 });
+        CubeSystem::CreateCube({ 2, 0, 0 }, { 1, 1, 1 }, { 1, 0, 0 });
 
-        auto camera = CameraSystem::CreateCamera(m_registry, m_mainWindow,
+        auto camera = CameraSystem::CreateCamera(m_mainWindow,
             1.0f * m_mainWindow.getWidth() / m_mainWindow.getHeight(), glm::radians(50.0f), 0.02, 2000);
 
-        m_registry.get<Transform>(camera).position.z += 5;
-        m_registry.get<Camera>(camera).updateViewMatrix(
-            m_registry.get<Transform>(camera)
+        Registry.get<Transform>(camera).position.z += 5;
+        Registry.get<Camera>(camera).updateViewMatrix(
+            Registry.get<Transform>(camera)
         );
 
         glEnable(GL_DEPTH_TEST);
@@ -110,13 +113,13 @@ namespace nith
         while (m_mainWindow.isOpen())
         {
             // input
-            CameraSystem::Update(m_registry, s_deltaTime);
+            CameraSystem::Update(s_deltaTime);
             // render imgui
             ImGui_ImplOpenGL3_NewFrame();
             ImGui_ImplGlfw_NewFrame();
             ImGui::NewFrame();
 
-            DebugSystem::Render(m_registry, s_deltaTime);
+            DebugSystem::Render(s_deltaTime);
 
             {
                 ImGui::SetNextWindowBgAlpha(0.2);
@@ -133,7 +136,7 @@ namespace nith
             // render
             m_mainWindow.beginLoop();
 
-            CubeSystem::Render(m_registry, camera, s_deltaTime);
+            CubeSystem::Render(camera, s_deltaTime);
             ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
             m_mainWindow.endLoop();

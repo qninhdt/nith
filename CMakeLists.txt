@@ -16,6 +16,7 @@ set(NITH_CLIENT_SOURCES
     "src/systems/cube_system.cpp"
     "src/systems/debug_system.cpp"
     "src/loaders/shader_loader.cpp"
+    "src/common.cpp"
 )
  
 set(NITH_UTIL_SOURCES

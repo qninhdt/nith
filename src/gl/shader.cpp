@@ -4,6 +4,16 @@
 
 namespace nith::gl 
 {
+    Shader* Shader::s_currentShader = nullptr;
+
+    void Shader::loadUniformLocations()
+    {
+        m_uniformLocs[(size_t)ShaderUniform::PROJECTION] = getUniformLocation("projection");
+        m_uniformLocs[(size_t)ShaderUniform::VIEW]       = getUniformLocation("view");
+        m_uniformLocs[(size_t)ShaderUniform::MODEL]      = getUniformLocation("model");
+    }
+
+
     bool Shader::loadFromSource(const std::string& vertexSource,
         const std::string& fragmentSource, const bool& log)
     {
@@ -64,6 +74,8 @@ namespace nith::gl
         // delete shaders
         glDeleteShader(vertexShader);
         glDeleteShader(fragmentShader);
+
+        loadUniformLocations();
 
         return true;
     }

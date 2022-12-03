@@ -29,7 +29,7 @@
 
 namespace nith {
 
-    static const std::string NITH_ROOT = "D:/github/nith/";
+    static std::string NITH_ROOT = "D:/github/nith/";
 
     using i8  = std::int8_t;
     using i16 = std::int16_t;
@@ -54,4 +54,6 @@ namespace nith {
     using mat4 = glm::mat4;
 
     using size = std::size_t;
+
+
 }

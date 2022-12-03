@@ -5,6 +5,6 @@ namespace nith
     class DebugSystem
     {
     public:
-        static void Render(entt::registry& registry, const f32& deltaTime);
+        static void Render(const f32& deltaTime);
     };
 }

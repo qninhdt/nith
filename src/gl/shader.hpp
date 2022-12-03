@@ -2,6 +2,15 @@
 
 namespace nith::gl
 {
+    enum class ShaderUniform: size_t
+    {
+        PROJECTION,
+        VIEW,
+        MODEL,
+
+        SHADER_UNIFORM_COUNT
+    };
+
     class Shader
     {
     public:
@@ -14,6 +23,10 @@ namespace nith::gl
         Shader& operator=(Shader const&) = delete;
 
         GLuint getUniformLocation(const char* name) const;
+        GLuint getUniformLocation(const ShaderUniform& name) const 
+        {
+            return m_uniformLocs[(size_t)name];
+        }
 
         void setInt(const GLuint& location, const i32& value) const;
         void setUint(const GLuint& location, const u32& value) const;
@@ -31,11 +44,19 @@ namespace nith::gl
 
         bool reload();
 
-        void use() const;
+        void use();
 
         std::string getName() const;
 
+        void loadUniformLocations();
+
+        static Shader& GetCurrentShader() { return *s_currentShader; }
+
     private:
+        static Shader* s_currentShader;
+
+        std::array<GLuint, (std::size_t) ShaderUniform::SHADER_UNIFORM_COUNT> m_uniformLocs;
+
         GLuint m_programId;
         std::string m_vertPath;
         std::string m_fragPath;
@@ -78,7 +99,8 @@ namespace nith::gl
         glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(value));
     }
 
-    inline void Shader::use() const {
+    inline void Shader::use() {
+        s_currentShader = this;
         glUseProgram(m_programId);
     }
 

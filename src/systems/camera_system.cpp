@@ -1,10 +1,12 @@
 #include "systems/camera_system.hpp"
 #include "io/input.hpp"
 #include "window_event.hpp"
+#include "registry.hpp"
+#include "gl/shader.hpp"
 
 namespace nith
 {
-    void CameraSystem::Init(entt::registry& registry)
+    void CameraSystem::Init()
     {
         auto& dispatcher = io::Input::GetEventDispatcher();
         dispatcher.addEventListener<io::MouseMovedEvent>(
@@ -13,7 +15,7 @@ namespace nith
                 double deltaX = event.getMouseDeltaX();
                 double deltaY = event.getMouseDeltaY();
    
-                auto view = registry.view<Camera, Transform>();
+                auto view = Registry.view<Camera, Transform>();
                 for (auto [entity, camera, transform] : view.each())
                 {
                     if (!camera.window->isShowCursor()) {
@@ -29,12 +31,12 @@ namespace nith
 
     }
 
-    entt::entity CameraSystem::CreateCamera(entt::registry& registry, Window& window,
+    entt::entity CameraSystem::CreateCamera(Window& window,
         const f32& aspect, const f32& fov, const f32& near, const f32& far)
     {
-        auto entity = registry.create();
-        auto& camera = registry.emplace<Camera>(entity);
-        auto& transform = registry.emplace<Transform>(entity);
+        auto entity = Registry.create();
+        auto& camera = Registry.emplace<Camera>(entity);
+        auto& transform = Registry.emplace<Transform>(entity);
 
         transform.rotation.y = 3.14f;
         camera.aspect = aspect;
@@ -60,9 +62,9 @@ namespace nith
         return entity;
     }
 
-    void CameraSystem::Update(entt::registry& registry, const float& deltaTime)
+    void CameraSystem::Update(const float& deltaTime)
     {
-        auto view = registry.view<Camera, Transform>();
+        auto view = Registry.view<Camera, Transform>();
         for (auto [entity, camera, transform] : view.each())
         {
             if (io::Input::IsKeyPressed(io::KeyCode::W))
@@ -81,5 +83,17 @@ namespace nith
             // TODO: only update 
             camera.updateViewMatrix(transform);
         }
+    }
+
+    void CameraSystem::Active(const entt::entity& cameraEntity)
+    {
+        auto& shader = gl::Shader::GetCurrentShader();
+        auto& camera = Registry.get<Camera>(cameraEntity);
+
+        shader.setMat4(shader.getUniformLocation(gl::ShaderUniform::PROJECTION),
+            camera.projectionMatrix);
+
+        shader.setMat4(shader.getUniformLocation(gl::ShaderUniform::VIEW),
+            camera.viewMatrix);
     }
 }

@@ -23,7 +23,6 @@ namespace nith
         void init_everything();
 
         Window m_mainWindow;
-        entt::registry m_registry;
         
     };
 }

@@ -5,8 +5,8 @@ namespace nith
     class CubeSystem
     {
     public:
-        static entt::entity CreateCube(entt::registry& registry, const v3& position,
+        static entt::entity CreateCube(const v3& position,
             const v3 rotation, const v3& color);
-        static void Render(entt::registry& registry, entt::entity cameraEntity, const f32& deltaTime);
+        static void Render(entt::entity cameraEntity, const f32& deltaTime);
     };
 }

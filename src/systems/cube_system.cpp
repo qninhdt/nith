@@ -1,4 +1,5 @@
 #include "systems/cube_system.hpp"
+#include "systems/camera_system.hpp"
 #include "loaders/shader_loader.hpp"
 #include "components/transform.hpp"
 #include "components/cube.hpp"
@@ -6,18 +7,19 @@
 #include "components/camera.hpp"
 #include "components/renderable3D.hpp"
 #include "components/debug/transform_debug.hpp"
+#include "registry.hpp"
 
 namespace nith
 {
-    entt::entity CubeSystem::CreateCube(entt::registry& registry, const v3& position,
+    entt::entity CubeSystem::CreateCube(const v3& position,
         const v3 rotation, const v3& color)
     {
-        auto entity = registry.create();
-        auto& transform = registry.emplace<Transform>(entity);
-        auto& cube = registry.emplace<Cube>(entity);
-        auto& cubeRenderer = registry.emplace<CubeRenderer>(entity);
-        auto& renderable3D = registry.emplace<Renderable3D>(entity);
-        registry.emplace<TransformDebug>(entity);
+        auto entity = Registry.create();
+        auto& transform = Registry.emplace<Transform>(entity);
+        auto& cube = Registry.emplace<Cube>(entity);
+        auto& cubeRenderer = Registry.emplace<CubeRenderer>(entity);
+        auto& renderable3D = Registry.emplace<Renderable3D>(entity);
+        Registry.emplace<TransformDebug>(entity);
 
         cube.color = color;
 
@@ -31,20 +33,19 @@ namespace nith
         return entity;
     }
 
-    void CubeSystem::Render(entt::registry& registry, entt::entity cameraEntity, const f32& deltaTime)
+    void CubeSystem::Render(entt::entity cameraEntity, const f32& deltaTime)
     {
-        auto& camera = registry.get<Camera>(cameraEntity);
+        auto& camera = Registry.get<Camera>(cameraEntity);
         auto& shader = ShaderLoader::Get("cube");
 
         shader.use();
+        CameraSystem::Active(cameraEntity);
 
-        shader.setMat4(shader.getUniformLocation("projection"), camera.projectionMatrix);
-        shader.setMat4(shader.getUniformLocation("view"), camera.viewMatrix);
-
-        auto view = registry.view<Cube, CubeRenderer, Renderable3D, Transform>();
+        auto view = Registry.view<Cube, CubeRenderer, Renderable3D, Transform>();
         for (auto [entity, cube, cubeRenderer, renderable3D, transform] : view.each())
         {
-            shader.setMat4(shader.getUniformLocation("model"), renderable3D.modelMatrix);
+            shader.setMat4(shader.getUniformLocation(gl::ShaderUniform::MODEL),
+                renderable3D.modelMatrix);
             cubeRenderer.mesh->render();
         }
     }
